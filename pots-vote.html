@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Player of the Season — AFC Green Court Dukes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f4f4f0;
+      min-height: 100vh;
+      padding: 1.5rem 1rem 4rem;
+      color: #1a1a18;
+    }
+
+    .page {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .badge {
+      display: inline-block;
+      background: #A6C842;
+      color: #2d3a0e;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 0.03em;
+      color: #1a1a18;
+      line-height: 1;
+    }
+    .header p {
+      font-size: 13px;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    /* Instructions */
+    .instructions {
+      background: #fff;
+      border: 0.5px solid #e0e0d8;
+      border-radius: 14px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .instructions p {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.65;
+      margin-bottom: 0.85rem;
+    }
+    .instructions p:last-child { margin-bottom: 0; }
+    .instr-rows { display: flex; flex-direction: column; gap: 8px; margin: 0.75rem 0; }
+    .instr-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #1a1a18;
+    }
+    .rnum {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .r1 { background: #A6C842; color: #2d3a0e; }
+    .r2 { background: #6aabdc; color: #0a3d6b; }
+    .r3 { background: #e09a4e; color: #4a2800; }
+
+    /* Fields */
+    .field { margin-bottom: 1.25rem; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .field input, .field textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 0.5px solid #d0d0c8;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+      color: #1a1a18;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field input:focus, .field textarea:focus {
+      outline: none;
+      border-color: #A6C842;
+      box-shadow: 0 0 0 3px rgba(166,200,66,0.18);
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.5;
+    }
+
+    .divider {
+      border: none;
+      border-top: 0.5px solid #e0e0d8;
+      margin: 1.5rem 0;
+    }
+
+    /* Players grid */
+    .players-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .player-card {
+      border: 0.5px solid #e0e0d8;
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      background: #fff;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .player-card:active { transform: scale(0.97); }
+    .player-card:hover { border-color: #bbb; }
+    .player-card.selected-1 { border: 2px solid #A6C842; background: rgba(166,200,66,0.07); }
+    .player-card.selected-2 { border: 2px solid #6aabdc; background: rgba(106,171,220,0.08); }
+    .player-card.selected-3 { border: 2px solid #e09a4e; background: rgba(224,154,78,0.08); }
+
+    .rank-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .player-card.selected-1 .rank-badge { display: flex; background: #A6C842; color: #2d3a0e; }
+    .player-card.selected-2 .rank-badge { display: flex; background: #6aabdc; color: #0a3d6b; }
+    .player-card.selected-3 .rank-badge { display: flex; background: #e09a4e; color: #4a2800; }
+
+    .player-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: #eeeee8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: #888;
+      margin-bottom: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .player-card.selected-1 .player-avatar { background: #A6C842; color: #2d3a0e; }
+    .player-card.selected-2 .player-avatar { background: #6aabdc; color: #0a3d6b; }
+    .player-card.selected-3 .player-avatar { background: #e09a4e; color: #4a2800; }
+
+    .player-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a18;
+      line-height: 1.3;
+    }
+
+    /* Selections summary */
+    .selections-summary {
+      background: #fff;
+      border: 0.5px solid #e0e0d8;
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .sel-title {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .sel-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #1a1a18;
+    }
+    .sel-row:last-child { margin-bottom: 0; }
+    .sel-empty { color: #bbb; font-style: italic; }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #A6C842;
+      color: #2d3a0e;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .submit-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+    .submit-btn:not(:disabled):hover { opacity: 0.9; }
+    .submit-btn:not(:disabled):active { transform: scale(0.98); }
+
+    .error-msg {
+      display: none;
+      color: #a02020;
+      font-size: 13px;
+      margin-bottom: 1rem;
+      padding: 10px 14px;
+      background: #fdf0f0;
+      border: 0.5px solid #f0c0c0;
+      border-radius: 10px;
+    }
+
+    /* Success / already voted */
+    .end-screen {
+      display: none;
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+    .end-icon {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-size: 30px;
+    }
+    .end-icon.success { background: #A6C842; color: #2d3a0e; }
+    .end-icon.already { background: #eeeee8; color: #888; }
+    .end-screen h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 34px;
+      color: #1a1a18;
+      margin-bottom: 0.5rem;
+    }
+    .end-screen p { color: #666; font-size: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Vote form -->
+  <div id="vote-form">
+    <div class="header">
+      <div class="badge">2025/26 Season</div>
+      <h1>Player of the Season</h1>
+      <p>AFC Green Court Dukes — supporters vote</p>
+    </div>
+
+    <div class="instructions">
+      <p>Cast your vote for the AFC Green Court Dukes Player of the Season. Select three players in order of preference — points are awarded as follows:</p>
+      <div class="instr-rows">
+        <div class="instr-row"><span class="rnum r1">1</span><span><strong>1st choice</strong> — 3 points</span></div>
+        <div class="instr-row"><span class="rnum r2">2</span><span><strong>2nd choice</strong> — 2 points</span></div>
+        <div class="instr-row"><span class="rnum r3">3</span><span><strong>3rd choice</strong> — 1 point</span></div>
+      </div>
+      <p>Tap a player to select them, tap again to deselect. Each supporter can only vote once.</p>
+    </div>
+
+    <div class="field">
+      <label>Your name</label>
+      <input type="text" id="voter-name" placeholder="Enter your name..." autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label>Your player's name</label>
+      <input type="text" id="voter-player" placeholder="e.g. Aleckie Arthur" autocomplete="off" />
+    </div>
+
+    <hr class="divider" />
+
+    <div class="players-grid" id="players-grid"></div>
+
+    <div class="selections-summary">
+      <div class="sel-title">Your selections</div>
+      <div class="sel-row"><span class="rnum r1">1</span><span id="sel1" class="sel-empty">not selected</span></div>
+      <div class="sel-row"><span class="rnum r2">2</span><span id="sel2" class="sel-empty">not selected</span></div>
+      <div class="sel-row"><span class="rnum r3">3</span><span id="sel3" class="sel-empty">not selected</span></div>
+    </div>
+
+    <div class="field">
+      <label>Comment</label>
+      <textarea id="voter-comment" placeholder="Tell us why you voted the way you did — standout moments, performances, attitude..."></textarea>
+    </div>
+
+    <div class="error-msg" id="error-msg"></div>
+    <button class="submit-btn" id="submit-btn" disabled>Submit vote</button>
+  </div>
+
+  <!-- Success screen -->
+  <div class="end-screen" id="success-screen">
+    <div class="end-icon success">✓</div>
+    <h2>Vote submitted!</h2>
+    <p>Thanks for voting in the AFC Green Court Dukes<br>Player of the Season award.</p>
+  </div>
+
+  <!-- Already voted screen -->
+  <div class="end-screen" id="already-screen">
+    <div class="end-icon already">✓</div>
+    <h2>Already voted</h2>
+    <p>You've already cast your vote this season.<br>Each supporter can only vote once.</p>
+  </div>
+
+</div>
+
+<script>
+  // ─── CONFIGURATION ────────────────────────────────────────────────
+  const WORKER_URL = 'YOUR_CLOUDFLARE_WORKER_URL'; // ← replace this
+  // ──────────────────────────────────────────────────────────────────
+
+  const PLAYERS = [
+    'Jax Colasanto','Jamie Hope','Daniel Kingsley-Lavoe','Archie Brackell',
+    'Luke Manktelow','Reggie Murray','Reegan Stockdale','George Winter',
+    'Aidan Bays','Teddy Booker','Oliver Lee-Healey','Aleckie Arthur',
+    'Christopher Barnes','Alfie Wakeman'
+  ].sort((a, b) => {
+    const surn = n => n.trim().split(' ').slice(-1)[0].toLowerCase();
+    return surn(a).localeCompare(surn(b));
+  });
+
+  let selections = [null, null, null];
+
+  function initials(name) {
+    return name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase();
+  }
+
+  function safeId(name) {
+    return name.replace(/[\s']/g, '-');
+  }
+
+  function renderPlayers() {
+    document.getElementById('players-grid').innerHTML = PLAYERS.map(p => `
+      <div class="player-card" data-player="${p}" onclick="selectPlayer(this)">
+        <div class="player-avatar" id="av-${safeId(p)}">${initials(p)}</div>
+        <div class="player-name">${p}</div>
+        <span class="rank-badge" id="rb-${safeId(p)}"></span>
+      </div>
+    `).join('');
+  }
+
+  function selectPlayer(card) {
+    const name = card.dataset.player;
+    const idx = selections.indexOf(name);
+    if (idx !== -1) {
+      selections[idx] = null;
+    } else {
+      const free = selections.indexOf(null);
+      if (free === -1) return;
+      selections[free] = name;
+    }
+    updateUI();
+  }
+
+  function updateUI() {
+    PLAYERS.forEach(p => {
+      const card = document.querySelector(`[data-player="${p}"]`);
+      const rb = document.getElementById('rb-' + safeId(p));
+      card.className = 'player-card';
+      rb.textContent = '';
+      const idx = selections.indexOf(p);
+      if (idx !== -1) {
+        card.classList.add('selected-' + (idx + 1));
+        rb.textContent = idx + 1;
+      }
+    });
+
+    ['sel1', 'sel2', 'sel3'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (selections[i]) {
+        el.textContent = selections[i];
+        el.className = '';
+      } else {
+        el.textContent = 'not selected';
+        el.className = 'sel-empty';
+      }
+    });
+
+    const name = document.getElementById('voter-name').value.trim();
+    const allPicked = selections.every(s => s !== null);
+    document.getElementById('submit-btn').disabled = !(name && allPicked);
+  }
+
+  document.getElementById('voter-name').addEventListener('input', updateUI);
+
+  document.getElementById('submit-btn').addEventListener('click', async () => {
+    const name = document.getElementById('voter-name').value.trim();
+    const playerName = document.getElementById('voter-player').value.trim();
+    const comment = document.getElementById('voter-comment').value.trim();
+    const errEl = document.getElementById('error-msg');
+    errEl.style.display = 'none';
+
+    const VOTE_KEY = 'gcdukes_pots_2526_voted';
+    if (localStorage.getItem(VOTE_KEY)) {
+      document.getElementById('vote-form').style.display = 'none';
+      document.getElementById('already-screen').style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    const payload = {
+      voter: name,
+      playerName: playerName || null,
+      first: selections[0],
+      second: selections[1],
+      third: selections[2],
+      comment: comment || null,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Worker error ' + res.status);
+      localStorage.setItem(VOTE_KEY, '1');
+      document.getElementById('vote-form').style.display = 'none';
+      document.getElementById('success-screen').style.display = 'block';
+    } catch (e) {
+      errEl.textContent = 'Something went wrong — please try again.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Submit vote';
+    }
+  });
+
+  renderPlayers();
+
+  // Check if already voted on page load
+  if (localStorage.getItem('gcdukes_pots_2526_voted')) {
+    document.getElementById('vote-form').style.display = 'none';
+    document.getElementById('already-screen').style.display = 'block';
+  }
+</script>
+</body>
+</html>
