@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kit Order — AFC Green Court Dukes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f4f4f0;
+      min-height: 100vh;
+      padding: 1.5rem 1rem 4rem;
+      color: #1a1a18;
+    }
+
+    .page {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .badge {
+      display: inline-block;
+      background: #A6C842;
+      color: #2d3a0e;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 0.03em;
+      color: #1a1a18;
+      line-height: 1;
+    }
+    .header p {
+      font-size: 13px;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .field { margin-bottom: 1.25rem; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .field input, .field select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 0.5px solid #d0d0c8;
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+      color: #1a1a18;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: #A6C842;
+      box-shadow: 0 0 0 3px rgba(166,200,66,0.18);
+    }
+
+    .divider {
+      border: none;
+      border-top: 0.5px solid #e0e0d8;
+      margin: 1.5rem 0;
+    }
+
+    .size-chart {
+      background: #fff;
+      border: 0.5px solid #e0e0d8;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .size-chart-header {
+      padding: 0.85rem 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .size-chart-header span { font-size: 13px; font-weight: 500; color: #1a1a18; }
+    .size-chart-header .chevron { font-size: 12px; color: #888; transition: transform 0.2s; }
+    .size-chart-header.open .chevron { transform: rotate(180deg); }
+    .size-chart-body { display: none; border-top: 0.5px solid #e0e0d8; overflow-x: auto; }
+    .size-chart-body.open { display: block; }
+    .size-chart-body table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .size-chart-body th {
+      background: #f4f4f0;
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: 500;
+      color: #555;
+      white-space: nowrap;
+    }
+    .size-chart-body td {
+      padding: 7px 10px;
+      border-top: 0.5px solid #e0e0d8;
+      color: #1a1a18;
+      white-space: nowrap;
+    }
+    .size-chart-body tr:hover td { background: #f9f9f6; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #A6C842;
+      color: #2d3a0e;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .submit-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+    .submit-btn:not(:disabled):hover { opacity: 0.9; }
+    .submit-btn:not(:disabled):active { transform: scale(0.98); }
+
+    .error-msg {
+      display: none;
+      color: #a02020;
+      font-size: 13px;
+      margin-bottom: 1rem;
+      padding: 10px 14px;
+      background: #fdf0f0;
+      border: 0.5px solid #f0c0c0;
+      border-radius: 10px;
+    }
+
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+    .success-icon {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      background: #A6C842;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-size: 30px;
+      color: #2d3a0e;
+    }
+    .success-screen h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 34px;
+      color: #1a1a18;
+      margin-bottom: 0.5rem;
+    }
+    .success-screen p { color: #666; font-size: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div id="kit-form">
+    <div class="header">
+      <div class="badge">2025/26 Season</div>
+      <h1>Kit Order</h1>
+      <p>AFC Green Court Dukes — please complete one form per player</p>
+    </div>
+
+    <div class="field">
+      <label>Player name</label>
+      <input type="text" id="player-name" placeholder="Enter player's full name..." autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label>Squad number</label>
+      <input type="number" id="squad-number" placeholder="e.g. 7" min="1" max="99" autocomplete="off" />
+    </div>
+
+    <hr class="divider" />
+
+    <div class="size-chart">
+      <div class="size-chart-header" id="chart-toggle" onclick="toggleChart()">
+        <span>JOMA sizing guide</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="size-chart-body" id="chart-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Age</th>
+              <th>Chest (in)</th>
+              <th>Waist (in)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>6XS</td><td>4</td><td>22/24"</td><td>—</td></tr>
+            <tr><td>5XS</td><td>6</td><td>24/26"</td><td>20/22"</td></tr>
+            <tr><td>4XS</td><td>8</td><td>26/28"</td><td>22/24"</td></tr>
+            <tr><td>3XS</td><td>10</td><td>28/30"</td><td>24/26"</td></tr>
+            <tr><td>2XS</td><td>12</td><td>30/32"</td><td>26/28"</td></tr>
+            <tr><td>XS</td><td>14</td><td>32/34"</td><td>28/30"</td></tr>
+            <tr><td>Small</td><td>—</td><td>36/38"</td><td>30/32"</td></tr>
+            <tr><td>Medium</td><td>—</td><td>38/40"</td><td>32/34"</td></tr>
+            <tr><td>Large</td><td>—</td><td>40/42"</td><td>34/36"</td></tr>
+            <tr><td>XL</td><td>—</td><td>42/44"</td><td>36/38"</td></tr>
+            <tr><td>2XL</td><td>—</td><td>44/46"</td><td>38/40"</td></tr>
+            <tr><td>3XL</td><td>—</td><td>46/48"</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Shirt size</label>
+      <select id="shirt-size">
+        <option value="">Select a size...</option>
+        <option>6XS</option>
+        <option>5XS</option>
+        <option>4XS</option>
+        <option>3XS</option>
+        <option>2XS</option>
+        <option>XS</option>
+        <option>Small</option>
+        <option>Medium</option>
+        <option>Large</option>
+        <option>XL</option>
+        <option>2XL</option>
+        <option>3XL</option>
+      </select>
+    </div>
+
+    <div class="error-msg" id="error-msg"></div>
+    <button class="submit-btn" id="submit-btn" disabled>Submit</button>
+  </div>
+
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✓</div>
+    <h2>Order received!</h2>
+    <p>Thanks — we've got the kit details for your player.<br>We'll be in touch with any updates.</p>
+  </div>
+
+</div>
+
+<script>
+  // ─── CONFIGURATION ────────────────────────────────────────────────
+  const WORKER_URL = 'https://dukes-pots-vote.michaelbays.workers.dev';
+  // ──────────────────────────────────────────────────────────────────
+
+  function toggleChart() {
+    const body = document.getElementById('chart-body');
+    const header = document.getElementById('chart-toggle');
+    body.classList.toggle('open');
+    header.classList.toggle('open');
+  }
+
+  function updateSubmit() {
+    const name = document.getElementById('player-name').value.trim();
+    const num = document.getElementById('squad-number').value.trim();
+    const size = document.getElementById('shirt-size').value;
+    document.getElementById('submit-btn').disabled = !(name && num && size);
+  }
+
+  ['player-name', 'squad-number', 'shirt-size'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateSubmit);
+    document.getElementById(id).addEventListener('change', updateSubmit);
+  });
+
+  document.getElementById('submit-btn').addEventListener('click', async () => {
+    const name = document.getElementById('player-name').value.trim();
+    const num = document.getElementById('squad-number').value.trim();
+    const size = document.getElementById('shirt-size').value;
+    const errEl = document.getElementById('error-msg');
+    errEl.style.display = 'none';
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    const payload = {
+      playerName: name,
+      squadNumber: num,
+      shirtSize: size,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Worker error ' + res.status);
+      document.getElementById('kit-form').style.display = 'none';
+      document.getElementById('success-screen').style.display = 'block';
+    } catch(e) {
+      errEl.textContent = 'Something went wrong — please try again.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Submit';
+    }
+  });
+</script>
+</body>
+</html>
